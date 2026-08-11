@@ -3,359 +3,235 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Office Sign-In Kiosk</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <title>Check-In Step 2</title>
   <style>
-    .glass-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
+    * { box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: #f1f5f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
     }
-    .staff-card {
-      transition: all 0.2s ease-in-out;
+    .kiosk-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 28px 36px;
+      max-width: 920px;
+      width: 100%;
+      box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
     }
-    .staff-card:hover {
+    .step-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 240px;
+      margin: 0 auto 24px auto;
+      position: relative;
+    }
+    .step-bar-line {
+      position: absolute;
+      top: 50%; left: 0; right: 0;
+      height: 3px;
+      background-color: #0f2b5c;
+      z-index: 1;
+      transform: translateY(-50%);
+    }
+    .step-circle {
+      width: 32px; height: 32px;
+      border-radius: 50%;
+      background-color: #0f2b5c;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.9rem;
+      z-index: 2;
+    }
+    .step-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .step-badge {
+      background-color: #e0e7ff;
+      color: #1e1b4b;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .step-title {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0;
+    }
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+    .card {
+      border-radius: 14px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      min-height: 100px;
+    }
+    .card:hover {
       transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
     }
-    .staff-card.selected {
-      border-color: #2563eb;
-      background-color: #eff6ff;
+    .card-icon {
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+    .card-title {
+      font-weight: 700;
+      font-size: 0.98rem;
+      color: #0f172a;
+      margin-bottom: 2px;
+    }
+    .card-subtitle {
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+    /* Colors */
+    .theme-yellow { background-color: #fefce8; border: 1.5px solid #fef08a; }
+    .theme-green  { background-color: #f0fdf4; border: 1.5px solid #86efac; }
+    .theme-blue   { background-color: #eff6ff; border: 1.5px solid #bfdbfe; }
+    .theme-purple { background-color: #faf5ff; border: 1.5px solid #e9d5ff; }
+    .theme-teal   { background-color: #f0fdfa; border: 1.5px solid #99f6e4; }
+    .theme-red    { background-color: #fff1f2; border: 1.5px solid #fca5a5; }
+
+    .footer-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .btn-back {
+      background: #ffffff;
+      border: 1.5px solid #cbd5e1;
+      padding: 10px 20px;
+      border-radius: 10px;
+      color: #334155;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-submit {
+      background-color: #047857;
+      color: #ffffff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
     }
   </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 font-sans flex flex-col">
+<body>
 
-  <!-- Top Header Navigation -->
-  <header class="bg-indigo-900 text-white shadow-md">
-    <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-      <div class="flex items-center space-x-3">
-        <i class="fa-solid fa-school text-2xl text-indigo-300"></i>
-        <h1 class="text-xl font-bold tracking-wide">Student Check-In Kiosk</h1>
-      </div>
-      <button id="nav-toggle" onclick="toggleView()" class="bg-indigo-800 hover:bg-indigo-700 text-indigo-100 px-4 py-2 rounded-lg text-sm font-semibold transition flex items-center space-x-2 border border-indigo-700">
-        <i class="fa-solid fa-user-shield"></i>
-        <span id="nav-toggle-text">Staff Portal</span>
-      </button>
-    </div>
-  </header>
-
-  <!-- Main Content Container -->
-  <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
-
-    <!-- ==================== STUDENT KIOSK VIEW ==================== -->
-    <div id="student-view" class="space-y-6">
-
-      <!-- Progress Bar -->
-      <div class="max-w-xl mx-auto mb-8">
-        <div class="flex justify-between text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
-          <span>Step 1: Details</span>
-          <span>Step 2: Select Staff & Submit</span>
-        </div>
-        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-          <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 50%;"></div>
-        </div>
-      </div>
-
-      <!-- CARD 1: Student Details -->
-      <div id="card-1" class="glass-card rounded-2xl shadow-xl p-8 border border-slate-200 max-w-xl mx-auto">
-        <h2 class="text-2xl font-bold text-slate-800 mb-2 text-center">Welcome! Please Sign In</h2>
-        <p class="text-slate-500 text-center mb-6 text-sm">Enter your details to check in with a staff member.</p>
-
-        <form id="student-form" onsubmit="event.preventDefault(); goToStep(2);" class="space-y-5">
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
-            <input type="text" id="student-name" required placeholder="e.g. Alex Johnson" class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition text-lg">
-          </div>
-
-          <div>
-            <label class="block text-sm font-semibold text-slate-700 mb-2">Grade Level</label>
-            <div class="grid grid-cols-4 gap-3">
-              <button type="button" onclick="selectGrade('9')" class="grade-btn border-2 border-slate-200 rounded-xl py-3 font-semibold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 transition text-center">9th</button>
-              <button type="button" onclick="selectGrade('10')" class="grade-btn border-2 border-slate-200 rounded-xl py-3 font-semibold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 transition text-center">10th</button>
-              <button type="button" onclick="selectGrade('11')" class="grade-btn border-2 border-slate-200 rounded-xl py-3 font-semibold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 transition text-center">11th</button>
-              <button type="button" onclick="selectGrade('12')" class="grade-btn border-2 border-slate-200 rounded-xl py-3 font-semibold text-slate-700 hover:border-indigo-500 hover:bg-indigo-50 transition text-center">12th</button>
-            </div>
-            <input type="hidden" id="student-grade" required>
-          </div>
-
-          <button type="submit" class="w-full mt-6 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg transition text-lg flex items-center justify-center space-x-2">
-            <span>Next: Select Staff</span>
-            <i class="fa-solid fa-arrow-right"></i>
-          </button>
-        </form>
-      </div>
-
-      <!-- CARD 2: Select Staff & Submit -->
-      <div id="card-2" class="glass-card rounded-2xl shadow-xl p-8 border border-slate-200 max-w-2xl mx-auto hidden">
-        <h2 class="text-2xl font-bold text-slate-800 mb-2 text-center">Who are you here to see?</h2>
-        <p class="text-slate-500 text-center mb-6 text-sm">Select the staff member you need to meet with.</p>
-
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-          <div onclick="selectStaff('Barraza - School Counselor')" class="staff-card border-2 border-slate-200 rounded-xl p-4 cursor-pointer hover:border-indigo-500 flex items-center space-x-4">
-            <div class="bg-blue-100 text-blue-600 p-3 rounded-lg"><i class="fa-solid fa-user-graduate text-xl"></i></div>
-            <div>
-              <div class="font-bold text-slate-800">Barraza</div>
-              <div class="text-xs text-slate-500">School Counselor</div>
-            </div>
-          </div>
-
-          <div onclick="selectStaff('Hood - SSC')" class="staff-card border-2 border-slate-200 rounded-xl p-4 cursor-pointer hover:border-indigo-500 flex items-center space-x-4">
-            <div class="bg-purple-100 text-purple-600 p-3 rounded-lg"><i class="fa-solid fa-building-user text-xl"></i></div>
-            <div>
-              <div class="font-bold text-slate-800">Hood</div>
-              <div class="text-xs text-slate-500">SSC (Student Services Center)</div>
-            </div>
-          </div>
-
-          <div onclick="selectStaff('Bocian - Restorative')" class="staff-card border-2 border-slate-200 rounded-xl p-4 cursor-pointer hover:border-indigo-500 flex items-center space-x-4">
-            <div class="bg-emerald-100 text-emerald-600 p-3 rounded-lg"><i class="fa-solid fa-handshake text-xl"></i></div>
-            <div>
-              <div class="font-bold text-slate-800">Bocian</div>
-              <div class="text-xs text-slate-500">Restorative Practices</div>
-            </div>
-          </div>
-
-          <div onclick="selectStaff('Operana/Florido - Nurse')" class="staff-card border-2 border-slate-200 rounded-xl p-4 cursor-pointer hover:border-indigo-500 flex items-center space-x-4">
-            <div class="bg-rose-100 text-rose-600 p-3 rounded-lg"><i class="fa-solid fa-user-nurse text-xl"></i></div>
-            <div>
-              <div class="font-bold text-slate-800">Operana / Florido</div>
-              <div class="text-xs text-slate-500">School Nurse</div>
-            </div>
-          </div>
-        </div>
-
-        <input type="hidden" id="selected-staff">
-
-        <div class="flex space-x-4">
-          <button type="button" onclick="goToStep(1)" class="w-1/3 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-3 rounded-xl transition">
-            Back
-          </button>
-          <button type="button" id="submit-btn" onclick="submitCheckIn()" disabled class="w-2/3 bg-indigo-600 disabled:opacity-50 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg transition flex items-center justify-center space-x-2">
-            <span>Complete Check-In</span>
-            <i class="fa-solid fa-check-circle"></i>
-          </button>
-        </div>
-      </div>
-
-      <!-- Success Screen Modal -->
-      <div id="success-card" class="glass-card rounded-2xl shadow-xl p-8 border border-emerald-200 max-w-xl mx-auto text-center hidden">
-        <div class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-3xl">
-          <i class="fa-solid fa-check"></i>
-        </div>
-        <h2 class="text-2xl font-bold text-slate-800 mb-2">You're Checked In!</h2>
-        <p class="text-slate-600 mb-6">Please take a seat in the waiting area. Someone will be with you shortly.</p>
-        <button onclick="resetForm()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl shadow-lg transition">
-          Done
-        </button>
-      </div>
-
+  <div class="kiosk-card">
+    <div class="step-bar">
+      <div class="step-bar-line"></div>
+      <div class="step-circle">1</div>
+      <div class="step-circle">2</div>
     </div>
 
-    <!-- ==================== STAFF PORTAL VIEW ==================== -->
-    <div id="staff-view" class="hidden space-y-6">
-      
-      <!-- Stats Summary Row -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-          <div>
-            <div class="text-slate-500 text-sm font-semibold uppercase">Currently Waiting</div>
-            <div id="stat-waiting" class="text-3xl font-bold text-amber-600">0</div>
-          </div>
-          <div class="bg-amber-100 text-amber-600 p-4 rounded-xl"><i class="fa-solid fa-clock text-2xl"></i></div>
-        </div>
+    <div class="step-header">
+      <span class="step-badge">Step 2</span>
+      <h2 class="step-title">Who are you here to see?</h2>
+    </div>
 
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-          <div>
-            <div class="text-slate-500 text-sm font-semibold uppercase">Total Check-Ins Today</div>
-            <div id="stat-total" class="text-3xl font-bold text-indigo-600">0</div>
-          </div>
-          <div class="bg-indigo-100 text-indigo-600 p-4 rounded-xl"><i class="fa-solid fa-users text-2xl"></i></div>
+    <div class="grid-container">
+      <div class="card theme-yellow">
+        <div class="card-icon">🏛️</div>
+        <div>
+          <div class="card-title">Aliano – Principal</div>
+          <div class="card-subtitle">Principal</div>
         </div>
       </div>
 
-      <!-- Filters & Active Queue Container -->
-      <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-        <div class="flex flex-col md:flex-row justify-between items-md-center gap-4 mb-6">
-          <h2 class="text-xl font-bold text-slate-800 flex items-center space-x-2">
-            <i class="fa-solid fa-list-check text-indigo-600"></i>
-            <span>Waiting Room Queue</span>
-          </h2>
-
-          <div class="flex items-center space-x-3">
-            <select id="filter-staff" onchange="renderQueue()" class="bg-slate-50 border border-slate-300 text-slate-700 text-sm rounded-lg p-2.5 outline-none">
-              <option value="ALL">All Staff Members</option>
-              <option value="Barraza - School Counselor">Barraza - School Counselor</option>
-              <option value="Hood - SSC">Hood - SSC</option>
-              <option value="Bocian - Restorative">Bocian - Restorative</option>
-              <option value="Operana/Florido - Nurse">Operana/Florido - Nurse</option>
-            </select>
-          </div>
+      <div class="card theme-yellow">
+        <div class="card-icon">🏛️</div>
+        <div>
+          <div class="card-title">King – AP</div>
+          <div class="card-subtitle">Assistant Principal</div>
         </div>
+      </div>
 
-        <!-- Queue Cards List -->
-        <div id="queue-list" class="space-y-3">
-          <!-- Queue items rendered dynamically -->
+      <div class="card theme-yellow">
+        <div class="card-icon">🏛️</div>
+        <div>
+          <div class="card-title">Foege – AP</div>
+          <div class="card-subtitle">Assistant Principal</div>
+        </div>
+      </div>
+
+      <div class="card theme-red">
+        <div class="card-icon">🩺</div>
+        <div>
+          <div class="card-title">Florido/Operana – Nurse</div>
+          <div class="card-subtitle">Health & Medical</div>
+        </div>
+      </div>
+
+      <div class="card theme-green">
+        <div class="card-icon">💚</div>
+        <div>
+          <div class="card-title">Rasinski – Social Worker</div>
+          <div class="card-subtitle">Social-Emotional & Support</div>
+        </div>
+      </div>
+
+      <div class="card theme-green">
+        <div class="card-icon">💚</div>
+        <div>
+          <div class="card-title">Davis – Social Worker</div>
+          <div class="card-subtitle">Social-Emotional & Support</div>
+        </div>
+      </div>
+
+      <div class="card theme-blue">
+        <div class="card-icon">🎓</div>
+        <div>
+          <div class="card-title">Barraza – School Counselor</div>
+          <div class="card-subtitle">Counselor</div>
+        </div>
+      </div>
+
+      <div class="card theme-purple">
+        <div class="card-icon">⭐</div>
+        <div>
+          <div class="card-title">Hood – SSC</div>
+          <div class="card-subtitle">Student Services Center</div>
+        </div>
+      </div>
+
+      <div class="card theme-teal">
+        <div class="card-icon">🤝</div>
+        <div>
+          <div class="card-title">Bocian – Restorative</div>
+          <div class="card-subtitle">Restorative Practices</div>
         </div>
       </div>
     </div>
 
-  </main>
+    <div class="footer-actions">
+      <button class="btn-back">&larr; Back</button>
+      <button class="btn-submit">Submit Check-In &#10003;</button>
+    </div>
+  </div>
 
-  <!-- JS Logic -->
-  <script>
-    // PRE-CONFIGURED GOOGLE APP SCRIPT WEBHOOK URL
-    const WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbxukZvTp5CRhxWGlFw0l98g9XSBeMD75Ls2zzCnciB4kccSE8a_Sp4QAsfdYWnKLXG8/exec";
-
-    // Application State
-    let queueData = [
-      { id: 1, name: "Jordan Smith", grade: "10", staff: "Barraza - School Counselor", timestamp: "8:15 AM" },
-      { id: 2, name: "Taylor Reed", grade: "12", staff: "Hood - SSC", timestamp: "8:22 AM" }
-    ];
-    let totalCount = 2;
-
-    // View Switching Logic
-    function toggleView() {
-      const studentView = document.getElementById('student-view');
-      const staffView = document.getElementById('staff-view');
-      const navText = document.getElementById('nav-toggle-text');
-
-      if (studentView.classList.contains('hidden')) {
-        studentView.classList.remove('hidden');
-        staffView.classList.add('hidden');
-        navText.innerText = 'Staff Portal';
-      } else {
-        studentView.classList.add('hidden');
-        staffView.classList.remove('hidden');
-        navText.innerText = 'Kiosk Mode';
-        renderQueue();
-      }
-    }
-
-    // Step Navigation
-    function goToStep(step) {
-      document.getElementById('card-1').classList.add('hidden');
-      document.getElementById('card-2').classList.add('hidden');
-      document.getElementById('success-card').classList.add('hidden');
-
-      if (step === 1) {
-        document.getElementById('card-1').classList.remove('hidden');
-        document.getElementById('progress-bar').style.width = '50%';
-      } else if (step === 2) {
-        document.getElementById('card-2').classList.remove('hidden');
-        document.getElementById('progress-bar').style.width = '100%';
-      }
-    }
-
-    // Grade Selection Helper
-    function selectGrade(grade) {
-      document.getElementById('student-grade').value = grade;
-      document.querySelectorAll('.grade-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
-        btn.classList.add('border-slate-200', 'text-slate-700');
-        if (btn.innerText.includes(grade)) {
-          btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
-        }
-      });
-    }
-
-    // Staff Selection Helper
-    function selectStaff(staffName) {
-      document.getElementById('selected-staff').value = staffName;
-      document.querySelectorAll('.staff-card').forEach(card => card.classList.remove('selected'));
-      event.currentTarget.classList.add('selected');
-      document.getElementById('submit-btn').disabled = false;
-    }
-
-    // Check-In Submission
-    function submitCheckIn() {
-      const name = document.getElementById('student-name').value;
-      const grade = document.getElementById('student-grade').value;
-      const staff = document.getElementById('selected-staff').value;
-      const timestamp = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-      if (!name || !grade || !staff) {
-        alert('Please complete all steps.');
-        return;
-      }
-
-      const payload = { id: Date.now(), name, grade, staff, timestamp };
-
-      // Local state update
-      queueData.push(payload);
-      totalCount++;
-
-      // Send to Google Sheets Webhook
-      if (WEBHOOK_URL) {
-        fetch(WEBHOOK_URL, {
-          method: 'POST',
-          mode: 'no-cors',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        }).catch(err => console.error("Webhook Error:", err));
-      }
-
-      // Display Success Card
-      document.getElementById('card-2').classList.add('hidden');
-      document.getElementById('success-card').classList.remove('hidden');
-    }
-
-    // Reset Form for Next Student
-    function resetForm() {
-      document.getElementById('student-form').reset();
-      document.getElementById('student-grade').value = '';
-      document.getElementById('selected-staff').value = '';
-      document.querySelectorAll('.grade-btn').forEach(btn => {
-        btn.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
-      });
-      document.querySelectorAll('.staff-card').forEach(card => card.classList.remove('selected'));
-      document.getElementById('submit-btn').disabled = true;
-      goToStep(1);
-    }
-
-    // Render Queue in Staff Portal
-    function renderQueue() {
-      const filter = document.getElementById('filter-staff').value;
-      const container = document.getElementById('queue-list');
-      container.innerHTML = '';
-
-      const filtered = queueData.filter(item => filter === 'ALL' || item.staff === filter);
-
-      document.getElementById('stat-waiting').innerText = queueData.length;
-      document.getElementById('stat-total').innerText = totalCount;
-
-      if (filtered.length === 0) {
-        container.innerHTML = `
-          <div class="text-center py-12 text-slate-400">
-            <i class="fa-solid fa-clipboard-check text-4xl mb-3"></i>
-            <p>No students currently waiting in this queue.</p>
-          </div>`;
-        return;
-      }
-
-      filtered.forEach((item) => {
-        container.innerHTML += `
-          <div class="p-4 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 transition flex items-center justify-between">
-            <div class="flex items-center space-x-4">
-              <span class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1.5 rounded-lg text-sm">
-                Gr. ${item.grade}
-              </span>
-              <div>
-                <h3 class="font-bold text-slate-800 text-lg">${item.name}</h3>
-                <div class="text-xs text-slate-500">Seeing: <span class="font-semibold text-slate-700">${item.staff}</span> • Checked in: ${item.timestamp}</div>
-              </div>
-            </div>
-            <button onclick="dismissStudent(${item.id})" class="text-slate-400 hover:text-slate-600 p-2 rounded-lg" title="Dismiss from Queue">
-              <i class="fa-solid fa-xmark text-xl"></i>
-            </button>
-          </div>`;
-      });
-    }
-
-    // Dismiss Student from Local Queue
-    function dismissStudent(id) {
-      queueData = queueData.filter(item => item.id !== id);
-      renderQueue();
-    }
-  </script>
 </body>
 </html>
