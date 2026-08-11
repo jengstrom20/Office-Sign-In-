@@ -94,7 +94,7 @@
       margin: 0;
     }
 
-    /* Step Panels Visibility */
+    /* Step Display Logic */
     .step-panel {
       display: none;
     }
@@ -103,22 +103,23 @@
       display: block;
     }
 
-    /* Grid Layouts */
-    .grid-container {
-      display: grid;
+    /* STEP 1 GRID: STRICT 2-COLUMN LAYOUT */
+    .grid-step-1 {
+      display: grid !important;
+      grid-template-columns: repeat(2, 1fr) !important;
       gap: 16px;
       margin-bottom: 32px;
     }
 
-    .grid-2x2 {
-      grid-template-columns: repeat(2, 1fr);
+    /* STEP 2 GRID: STRICT 3-COLUMN LAYOUT (3x3 FOR 9 CARDS) */
+    .grid-step-2 {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 16px;
+      margin-bottom: 32px;
     }
 
-    .grid-3x3 {
-      grid-template-columns: repeat(3, 1fr);
-    }
-
-    /* Option Card Styles */
+    /* Option Card Base Styles */
     .card {
       border-radius: 16px;
       padding: 18px 20px;
@@ -213,21 +214,21 @@
 
   <div class="kiosk-card">
     
-    <!-- Top Step Progress Bar -->
+    <!-- Top Step Progress Indicator -->
     <div class="step-bar">
       <div class="step-bar-line"></div>
       <div id="circle-step-1" class="step-circle active">1</div>
       <div id="circle-step-2" class="step-circle">2</div>
     </div>
 
-    <!-- STEP 1 PANEL -->
+    <!-- STEP 1 PANEL (2x2 Layout, 4 Options) -->
     <div id="step-1" class="step-panel active">
       <div class="step-header">
         <span class="step-badge">Step 1</span>
         <h2 class="step-title">What is the purpose of your visit?</h2>
       </div>
 
-      <div class="grid-container grid-2x2">
+      <div class="grid-step-1">
         <div class="card theme-blue" onclick="selectCard(this)">
           <div class="card-icon">📋</div>
           <div>
@@ -262,15 +263,14 @@
       </div>
     </div>
 
-    <!-- STEP 2 PANEL -->
+    <!-- STEP 2 PANEL (3x3 Layout, 9 Options Including Nurse) -->
     <div id="step-2" class="step-panel">
       <div class="step-header">
         <span class="step-badge">Step 2</span>
         <h2 class="step-title">Who are you here to see?</h2>
       </div>
 
-      <!-- 3x3 Grid containing Nurse + all original cards -->
-      <div class="grid-container grid-3x3">
+      <div class="grid-step-2">
         <!-- Row 1 -->
         <div class="card theme-yellow" onclick="selectCard(this)">
           <div class="card-icon">🏛️</div>
@@ -348,7 +348,7 @@
       </div>
     </div>
 
-    <!-- Navigation Footer -->
+    <!-- Navigation Footer Controls -->
     <div class="footer-actions">
       <button id="btn-back" class="btn btn-back btn-hidden" onclick="goToStep(1)">&larr; Back</button>
       <button id="btn-next" class="btn btn-next" onclick="goToStep(2)">Next &rarr;</button>
@@ -359,15 +359,12 @@
 
   <script>
     function goToStep(stepNumber) {
-      // Manage Panel Visibility
       document.getElementById('step-1').classList.toggle('active', stepNumber === 1);
       document.getElementById('step-2').classList.toggle('active', stepNumber === 2);
 
-      // Manage Circle Indicators
       document.getElementById('circle-step-1').classList.add('active');
       document.getElementById('circle-step-2').classList.toggle('active', stepNumber === 2);
 
-      // Manage Action Buttons
       const backBtn = document.getElementById('btn-back');
       const nextBtn = document.getElementById('btn-next');
       const submitBtn = document.getElementById('btn-submit');
