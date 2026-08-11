@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Sign-In Kiosk</title>
+  <title>Spring Wood Middle School Kiosk</title>
   <style>
     * {
       box-sizing: border-box;
@@ -24,7 +24,14 @@
     /* Page Header Above Card */
     .page-title-section {
       text-align: center;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
+    }
+
+    .school-logo {
+      width: 110px;
+      height: 110px;
+      object-fit: contain;
+      margin-bottom: 12px;
     }
 
     .page-title {
@@ -66,7 +73,7 @@
       left: 18px;
       right: 18px;
       height: 3px;
-      background-color: #02457a;
+      background-color: #e2e8f0;
       z-index: 1;
       transform: translateY(-50%);
     }
@@ -236,7 +243,7 @@
       font-weight: 500;
     }
 
-    /* Color Themes Matching Your Kiosk */
+    /* Color Themes */
     .theme-yellow { background-color: #fffdf0; border: 2px solid #facc15; }
     .theme-green  { background-color: #f0fdf4; border: 2px solid #4ade80; }
     .theme-blue   { background-color: #f0f7ff; border: 2px solid #60a5fa; }
@@ -302,7 +309,9 @@
 </head>
 <body>
 
+  <!-- Top Title Area with Spring Wood Middle School Logo -->
   <div class="page-title-section">
+    <img src="SW Logo PRIMARY.png" alt="Spring Wood Middle School Logo" class="school-logo">
     <h1 class="page-title">Welcome! Please Sign In</h1>
     <p class="page-subtitle">Enter your details and select who you are here to see.</p>
   </div>
@@ -313,11 +322,11 @@
     <div class="step-bar">
       <div class="step-bar-line"></div>
       <div id="circle-step-1" class="step-circle active">1</div>
-      <div id="circle-step-2" class="step-circle active">2</div>
+      <div id="circle-step-2" class="step-circle">2</div>
     </div>
 
-    <!-- STEP 1: Student Info -->
-    <div id="step-1" class="step-panel">
+    <!-- STEP 1: Student Info (DEFAULT PAGE) -->
+    <div id="step-1" class="step-panel active">
       <div class="step-header">
         <span class="step-badge">Step 1</span>
         <h2 class="step-title">Student Information</h2>
@@ -345,7 +354,7 @@
     </div>
 
     <!-- STEP 2: Staff Selection (3x3 Grid - 9 Cards including Nurse) -->
-    <div id="step-2" class="step-panel active">
+    <div id="step-2" class="step-panel">
       <div class="step-header">
         <span class="step-badge">Step 2</span>
         <h2 class="step-title">Who are you here to see?</h2>
